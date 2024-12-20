@@ -10,12 +10,6 @@ class BookListView(APIView):
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data)
 
-    def post(self, request):
-        serializer = BookSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BookDetailView(APIView):
     def get(self, request, pk):
@@ -44,6 +38,7 @@ class BookDetailView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Book.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
 
 class BookCreateView(APIView):
     def post(self, request):
@@ -53,26 +48,6 @@ class BookCreateView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class BookUpdateView(APIView):
-    def put(self, request, pk):
-        try:
-            book = Book.objects.get(pk=pk)
-            serializer = BookSerializer(book, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Book.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-class BookDeleteView(APIView):
-    def delete(self, request, pk):
-        try:
-            book = Book.objects.get(pk=pk)
-            book.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except Book.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
 
 class BookFilterTitleView(APIView):
     def get(self, request, title):
